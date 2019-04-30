@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>
+		Golf Course
+	</title>
+	<style>.button {
+	  display: inline-block;
+	  border-radius: 4px;
+	  background-color: black;
+	  border: none;
+	  color: #FFFFFF;
+	  text-align: center;
+	  font-size: 28px;
+	  padding: 20px;
+	  width: 200px;
+	  transition: all 0.5s;
+	  cursor: pointer;
+	  margin: 5px;
+	}
+
+	.button span {
+	  cursor: pointer;
+	  display: inline-block;
+	  position: relative;
+	  transition: 0.5s;
+	}
+
+	.button span:after {
+	  content: '\00bb';
+	  position: absolute;
+	  opacity: 0;
+	  top: 0;
+	  right: -20px;
+	  transition: 0.5s;
+	}
+
+	.button:hover span {
+	  padding-right: 25px;
+	}
+
+	.button:hover span:after {
+	  opacity: 1;
+	  right: 0;
+	}
+</style>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+<textarea rows="30" cols="100" id="code">
+ssdsdsd
+</textarea> <p></p>
+
+	<button class="button" onclick="endturn()" style="vertical-align:middle"><span>Submit</span></button>
+<script type="text/javascript">
+// check if it's our turn, and if so,
+// alter editability of code editor
+
+
+
+
+
+
+
+
+
+
+var $_GET = {};
+
+document.location.search.replace(/\??(?:([^=]+)=([^&]*)&?)/g, function () {
+    function decode(s) {
+        return decodeURIComponent(s.split("+").join(" "));
+    }
+
+    $_GET[decode(arguments[1])] = decode(arguments[2]);
+});
+
+setInterval(function () {
+	$.get("/checkturn", function (player) {
+		console.log(player)
+		if (player !== $_GET['player']) {
+			$("code").attr('readonly', 'readonly')
+		} else {
+			$("code").attr('readonly', '')
+		}
+
+})
+}, 1000)
+
+ function endturn() {
+	 $.ajax({
+		 url: "/turn?player=" + $_GET["player"],
+		 type: "GET",
+     dataType: "text"
+	 })
+ }
+			setInterval(function () {
+				$.ajax({
+      url: "/code",
+      type: "GET",
+      data: ({code: $("#code").val()}),
+      dataType: "text",
+      success: function(msg){
+         return
+      },
+      error: function(err){
+				return
+			}
+
+   })}, 1000)
+
+
+	</script>
+
+</body>
+</html>
