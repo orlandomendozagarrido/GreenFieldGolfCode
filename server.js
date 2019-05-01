@@ -29,7 +29,7 @@ var code = req.query.code
 res.sendFile(path.join(__dirname + '/frontend/index.html'));
 
 })
-
+// added get request 
 app.get('/checkturn', function(req, res) {
   client.get('turn', function(err, turn) {
     console.log(turn)
