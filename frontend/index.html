@@ -16,7 +16,7 @@
 	  width: 200px;
 	  transition: all 0.5s;
 	  cursor: pointer;
-	  margin: 5px;
+	  margin: 2px;
 	}
 
 	.button span {
@@ -48,24 +48,30 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </head>
-<body>
-<textarea rows="30" cols="100" id="code">
-ssdsdsd
-</textarea> <p></p>
+<body><div style="background-color:#20373c"><div style="padding:20px;width:50%;margin: 0 auto;">
+<h2 id="turnalert" style="font-weight:bold;color:white">
+</h2>
+<div style="display: table">
+<textarea style="color: #6bf96b;background-color: #2c302c;margin-top:10px; display: table-cell" rows="20" cols="60" id="code">
+</textarea> 
+<div style="color:white;vertical-align: top; display: table-cell;padding:20px"><strong><u>Problem:</u></strong><br>Write a function, fib(n), that returns nth Fibonacci number<p>
+	
+	Test Results:<p>
+	<textarea rows="10" cols="15" id="tests" readonly> Run
 
-	<button class="button" onclick="endturn()" style="vertical-align:middle"><span>Submit</span></button>
+ Your
+
+ Code!</textarea>
+
+
+</div>
+</div>
+<button class="button" onclick="runcode()" style="vertical-align:middle;color: #6bf96b"><span>Run</span></button>
+<br>
+<button class="button" onclick="endturn()" style="vertical-align:middle"><span>Submit</span></button>
+	</div>
+	</div>
 <script type="text/javascript">
-// check if it's our turn, and if so,
-// alter editability of code editor
-
-
-
-
-
-
-
-
-
 
 var $_GET = {};
 
@@ -76,27 +82,72 @@ document.location.search.replace(/\??(?:([^=]+)=([^&]*)&?)/g, function () {
 
     $_GET[decode(arguments[1])] = decode(arguments[2]);
 });
-
 setInterval(function () {
 	$.get("/checkturn", function (player) {
-		console.log(player)
 		if (player !== $_GET['player']) {
-			$("code").attr('readonly', 'readonly')
+			$("#code").attr('readonly', 'readonly')
+			$("#turnalert").text("It is not your turn");
+			$.get('/code', function(data) {
+                                console.log(data)
+                                $('#code').val(data);
+                        });
+
 		} else {
-			$("code").attr('readonly', '')
+			$("#code").removeAttr('readonly')
+			$("#turnalert").text("Your turn!")
+			$.ajax({
+				type: "GET",
+				url: "/code",
+				data: ({code : $("#code").val()}),
+				dataType: "text"
+			})
 		}
 
 })
-}, 1000)
+}, 2000)
+
+function fib(n) {
+	if (n === 0 || n === 1) {
+		return n;
+	} else {
+		return fib(n-1) + fib(n-2);
+	}
+}
+
+function runcode() {
+	var testFailed = false;
+	for (let i = 10; i < 20; i++) {
+		try {
+			console.log(fib(i))
+		let result = eval($("#code").val() + ";fib(" + i + ")");
+			console.log(result)
+		console.log
+		if (result !== fib(i)) {
+			testFailed = true;
+		}
+		}
+		catch {
+			testFailed = true;
+		}
+	}
+	$("#tests").val(testFailed ? "FAILED TEST" : "PASSED TEST");
+}
 
  function endturn() {
-	 $.ajax({
-		 url: "/turn?player=" + $_GET["player"],
-		 type: "GET",
-     dataType: "text"
-	 })
- }
-			setInterval(function () {
+	 runcode()
+	 if ($("#tests").val().includes("PASSED")) {
+	 	$.ajax({
+		 	url: "/turn?player=" + $_GET["player"],
+		 	type: "GET",
+     		 	dataType: "text"
+	 	})
+		 alert("Your code passed!")
+	 } else {
+		 alert("Code must pass tests before submition...");
+	 }
+
+}
+setInterval(function () {
 				$.ajax({
       url: "/code",
       type: "GET",
@@ -109,7 +160,7 @@ setInterval(function () {
 				return
 			}
 
-   })}, 1000)
+   })}, 3000)
 
 
 	</script>

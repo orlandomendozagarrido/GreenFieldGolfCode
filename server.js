@@ -1,5 +1,4 @@
 var express = require('express');
-var bodyParser = require('body-parser');
 var path = require('path');
 var bodyParser = require('body-parser')
 var app = express();
@@ -32,7 +31,7 @@ res.sendFile(path.join(__dirname + '/frontend/index.html'));
 // added get request 
 app.get('/checkturn', function(req, res) {
   client.get('turn', function(err, turn) {
-    console.log(turn)
+	  console.log(turn)
     res.end(turn)
   })
 })
@@ -42,6 +41,7 @@ app.get('/code', function (req, res) {
 		client.set("code", req.query.code)
 	}
 	client.get("code", function (err, code) {
+		console.log(code)
 		res.end(code)
 	})
 })
